@@ -1,0 +1,988 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <title>Questionnaire d’Auto-Évaluation – Démarrer en Affaires</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card: #1f2937;
+      --accent: #38bdf8;
+      --accent-soft: rgba(56, 189, 248, 0.2);
+      --text: #f9fafb;
+      --muted: #9ca3af;
+      --danger: #f97373;
+      --success: #4ade80;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI",
+        sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      background: radial-gradient(circle at top, #1e293b, #020617);
+      color: var(--text);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .app {
+      width: 100%;
+      max-width: 900px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(15, 23, 42, 0.99));
+      border-radius: 24px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.6);
+      padding: 24px 24px 28px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      overflow: hidden;
+      position: relative;
+    }
+
+    .glow {
+      position: absolute;
+      inset: -40%;
+      background: radial-gradient(circle at 10% 0, rgba(56, 189, 248, 0.16), transparent 55%),
+                  radial-gradient(circle at 100% 100%, rgba(96, 165, 250, 0.1), transparent 55%);
+      opacity: 0.7;
+      pointer-events: none;
+    }
+
+    .app-inner {
+      position: relative;
+      z-index: 1;
+    }
+
+    h1 {
+      font-size: 1.5rem;
+      margin-bottom: 4px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    h1 span.badge {
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+    }
+
+    .subtitle {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 16px;
+    }
+
+    .progress-container {
+      margin-bottom: 16px;
+    }
+
+    .progress-label {
+      display: flex;
+      justify-content: space-between;
+      font-size: 0.8rem;
+      color: var(--muted);
+      margin-bottom: 4px;
+    }
+
+    .progress-bar-outer {
+      background: rgba(15, 23, 42, 0.9);
+      border-radius: 999px;
+      overflow: hidden;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+    }
+
+    .progress-bar-inner {
+      height: 8px;
+      width: 0%;
+      background: linear-gradient(90deg, var(--accent), #a855f7);
+      transition: width 0.4s ease-out;
+    }
+
+    .question-card {
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.15), transparent 55%),
+                  linear-gradient(135deg, rgba(17, 24, 39, 0.96), rgba(15, 23, 42, 0.98));
+      border-radius: 18px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      padding: 18px 18px 16px;
+      margin-bottom: 16px;
+      animation: floatIn 0.45s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .question-section-label {
+      font-size: 0.7rem;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--accent);
+      margin-bottom: 6px;
+    }
+
+    .question-title-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      gap: 12px;
+      margin-bottom: 6px;
+    }
+
+    .question-index {
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--muted);
+    }
+
+    .question-text {
+      font-size: 0.98rem;
+      font-weight: 600;
+    }
+
+    .question-subtext {
+      font-size: 0.9rem;
+      color: var(--muted);
+      margin-bottom: 10px;
+    }
+
+    .answers {
+      display: grid;
+      gap: 8px;
+    }
+
+    button.answer {
+      text-align: left;
+      border-radius: 12px;
+      border: 1px solid rgba(148, 163, 184, 0.5);
+      background: rgba(15, 23, 42, 0.9);
+      padding: 10px 11px;
+      font-size: 0.9rem;
+      color: var(--text);
+      display: flex;
+      gap: 10px;
+      cursor: pointer;
+      transition:
+        transform 0.12s ease-out,
+        box-shadow 0.12s ease-out,
+        border-color 0.12s ease-out,
+        background 0.12s ease-out;
+      position: relative;
+      overflow: hidden;
+    }
+
+    button.answer::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 55%);
+      opacity: 0;
+      transition: opacity 0.2s ease-out;
+    }
+
+    button.answer:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 8px 20px rgba(15, 23, 42, 0.7);
+      border-color: var(--accent);
+    }
+
+    button.answer:hover::before {
+      opacity: 1;
+    }
+
+    button.answer span.badge-letter {
+      min-width: 26px;
+      height: 26px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: 600;
+      font-size: 0.8rem;
+      color: var(--accent);
+      background: rgba(15, 23, 42, 0.9);
+    }
+
+    button.answer span.answer-text {
+      flex: 1;
+    }
+
+    footer {
+      font-size: 0.8rem;
+      color: var(--muted);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 8px;
+      margin-top: 2px;
+    }
+
+    .nav-hint {
+      font-style: italic;
+    }
+
+    .btn-secondary {
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+      padding: 4px 10px;
+      font-size: 0.75rem;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .btn-secondary span.dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 999px;
+      background: var(--accent);
+    }
+
+    /* RESULTS */
+
+    .results {
+      display: none;
+      animation: floatIn 0.5s ease-out;
+    }
+
+    .results.visible {
+      display: block;
+    }
+
+    .result-header {
+      margin-bottom: 12px;
+    }
+
+    .result-header h2 {
+      font-size: 1.2rem;
+      margin-bottom: 4px;
+    }
+
+    .chips {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      font-size: 0.75rem;
+    }
+
+    .chip {
+      padding: 2px 8px;
+      border-radius: 999px;
+      border: 1px solid rgba(148, 163, 184, 0.7);
+      background: rgba(15, 23, 42, 0.9);
+      color: var(--muted);
+    }
+
+    .section-results {
+      display: grid;
+      gap: 10px;
+      margin-top: 8px;
+    }
+
+    .section-card {
+      border-radius: 14px;
+      border: 1px solid rgba(148, 163, 184, 0.6);
+      padding: 10px 11px;
+      background: linear-gradient(135deg, rgba(15, 23, 42, 0.98), rgba(15, 23, 42, 0.94));
+      position: relative;
+      overflow: hidden;
+    }
+
+    .section-card::before {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: radial-gradient(circle at 0 0, rgba(56, 189, 248, 0.18), transparent 55%);
+      opacity: 0.8;
+      pointer-events: none;
+    }
+
+    .section-card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+      margin-bottom: 4px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .section-title {
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .section-majority {
+      font-size: 0.8rem;
+      text-transform: uppercase;
+      letter-spacing: 0.09em;
+      color: var(--accent);
+    }
+
+    .section-body {
+      font-size: 0.9rem;
+      color: var(--muted);
+      position: relative;
+      z-index: 1;
+    }
+
+    .result-actions {
+      margin-top: 12px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+    }
+
+    .btn-primary {
+      border-radius: 999px;
+      border: none;
+      background: linear-gradient(135deg, var(--accent), #a855f7);
+      color: #0b1120;
+      padding: 7px 14px;
+      font-size: 0.85rem;
+      font-weight: 600;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.9);
+      transition: transform 0.1s ease-out, box-shadow 0.1s ease-out;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 16px 40px rgba(15, 23, 42, 1);
+    }
+
+    .btn-primary:active {
+      transform: translateY(0);
+      box-shadow: 0 6px 18px rgba(15, 23, 42, 0.9);
+    }
+
+    .emoji {
+      font-size: 1rem;
+    }
+
+    /* Animations */
+
+    @keyframes floatIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px) scale(0.98);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+      }
+    }
+
+    /* Confetti-ish lights */
+    .orb {
+      position: absolute;
+      width: 70px;
+      height: 70px;
+      border-radius: 999px;
+      pointer-events: none;
+      opacity: 0;
+      mix-blend-mode: screen;
+      animation: orbFloat 3s ease-in-out infinite;
+    }
+
+    .orb.one {
+      background: radial-gradient(circle, rgba(56, 189, 248, 0.6), transparent 65%);
+      top: 8%;
+      right: 6%;
+      animation-delay: 0.2s;
+    }
+
+    .orb.two {
+      background: radial-gradient(circle, rgba(96, 165, 250, 0.5), transparent 65%);
+      bottom: 6%;
+      left: 10%;
+      animation-delay: 0.6s;
+    }
+
+    @keyframes orbFloat {
+      0%, 100% {
+        opacity: 0;
+        transform: translateY(0) scale(0.8);
+      }
+      40% {
+        opacity: 1;
+        transform: translateY(-6px) scale(1);
+      }
+      60% {
+        opacity: 0.7;
+        transform: translateY(3px) scale(0.95);
+      }
+    }
+
+    @media (max-width: 640px) {
+      .app {
+        padding: 18px 14px 20px;
+        border-radius: 16px;
+      }
+
+      h1 {
+        font-size: 1.2rem;
+        flex-wrap: wrap;
+      }
+
+      .question-text {
+        font-size: 0.95rem;
+      }
+
+      button.answer {
+        font-size: 0.88rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <div class="glow"></div>
+    <div class="app-inner">
+      <div class="orb one"></div>
+      <div class="orb two"></div>
+
+      <header>
+        <h1>
+          Questionnaire d’Auto-Évaluation
+          <span class="badge">Démarrer en affaires</span>
+        </h1>
+        <p class="subtitle">
+          Répondez honnêtement. À la fin, vous verrez une interprétation pour chacune des trois sections.
+        </p>
+      </header>
+
+      <div class="progress-container">
+        <div class="progress-label">
+          <span id="progressText">Question 1 sur 12</span>
+          <span id="sectionLabel">Section 1 – Compétences &amp; état d’esprit</span>
+        </div>
+        <div class="progress-bar-outer">
+          <div class="progress-bar-inner" id="progressBar"></div>
+        </div>
+      </div>
+
+      <main>
+        <div id="questionView" class="question-card">
+          <div class="question-section-label" id="questionSectionSmallLabel">
+            Section 1 – Compétences entrepreneuriales &amp; état d’esprit
+          </div>
+          <div class="question-title-row">
+            <div class="question-index" id="questionIndex">Q1</div>
+            <div class="question-text" id="questionText"></div>
+          </div>
+          <div class="question-subtext" id="questionSubtext">
+            Sélectionnez l’option qui vous représente le mieux.
+          </div>
+
+          <div class="answers" id="answersContainer"></div>
+        </div>
+
+        <div id="resultsView" class="results">
+          <div class="result-header">
+            <h2>Vos résultats par section</h2>
+            <p class="subtitle">
+              Nous avons analysé la lettre majoritaire (A, B ou C) dans chaque section du questionnaire.
+            </p>
+            <div class="chips">
+              <span class="chip">A = prêt(e) à l’action</span>
+              <span class="chip">B = bonne base à consolider</span>
+              <span class="chip">C = à travailler avant de se lancer</span>
+            </div>
+          </div>
+
+          <div class="section-results" id="sectionResults"></div>
+
+          <div class="result-actions">
+            <button class="btn-primary" id="restartBtn">
+              <span class="emoji">🔄</span> Refaire le questionnaire
+            </button>
+          </div>
+        </div>
+      </main>
+
+      <footer>
+        <span class="nav-hint">Cliquez sur A, B ou C pour passer à la question suivante.</span>
+        <button class="btn-secondary" id="backBtn" disabled>
+          <span class="dot"></span> Question précédente
+        </button>
+      </footer>
+    </div>
+  </div>
+
+  <script>
+    const questions = [
+      // SECTION 1
+      {
+        id: 1,
+        section: 1,
+        sectionLabel: "Section 1 – Compétences entrepreneuriales & état d’esprit",
+        title: "Gestion du risque",
+        text:
+          "Êtes-vous à l’aise d’investir du temps et/ou de l’argent personnel sans garantie de retour immédiat, sachant que l’échec est une possibilité ?",
+        answers: [
+          {
+            letter: "A",
+            text: "Oui, c’est la nature de l’entrepreneuriat."
+          },
+          {
+            letter: "B",
+            text: "J’y suis ouvert, mais seulement si le risque est minimal."
+          },
+          {
+            letter: "C",
+            text: "Non, j’ai beaucoup de difficulté avec l’incertitude."
+          }
+        ]
+      },
+      {
+        id: 2,
+        section: 1,
+        sectionLabel: "Section 1 – Compétences entrepreneuriales & état d’esprit",
+        title: "Résolution de problèmes",
+        text:
+          "Face à un obstacle majeur et inattendu qui menace l’avancement de votre projet, quelle est votre première réaction ?",
+        answers: [
+          {
+            letter: "A",
+            text:
+              "Analyser calmement la cause, demander conseil et élaborer une solution structurée."
+          },
+          {
+            letter: "B",
+            text:
+              "Stresser, mais chercher rapidement une solution temporaire pour continuer."
+          },
+          {
+            letter: "C",
+            text: "Me décourager et envisager l’abandon."
+          }
+        ]
+      },
+      {
+        id: 3,
+        section: 1,
+        sectionLabel: "Section 1 – Compétences entrepreneuriales & état d’esprit",
+        title: "Autonomie et discipline",
+        text:
+          "Pouvez-vous maintenir une productivité élevée et respecter un horaire strict sans supervision ni compte à rendre au quotidien ?",
+        answers: [
+          {
+            letter: "A",
+            text: "Oui, je suis très auto-discipliné(e)."
+          },
+          {
+            letter: "B",
+            text:
+              "Oui, mais j’ai besoin d’outils de gestion du temps et de rappels."
+          },
+          {
+            letter: "C",
+            text:
+              "Non, je fonctionne mieux avec un cadre et des échéances imposées par d’autres."
+          }
+        ]
+      },
+      {
+        id: 4,
+        section: 1,
+        sectionLabel: "Section 1 – Compétences entrepreneuriales & état d’esprit",
+        title: "Capacité d’apprentissage",
+        text:
+          "Lorsque vous devez acquérir une nouvelle compétence (ex. comptabilité de base, SEO, montage vidéo) pour votre entreprise, comment l’abordez-vous ?",
+        answers: [
+          {
+            letter: "A",
+            text:
+              "Je me forme de manière autonome (livres, tutoriels, cours en ligne)."
+          },
+          {
+            letter: "B",
+            text: "J’essaie, mais j’ai tendance à déléguer rapidement."
+          },
+          {
+            letter: "C",
+            text:
+              "Je préfère engager quelqu’un pour le faire, même pour les bases."
+          }
+        ]
+      },
+
+      // SECTION 2
+      {
+        id: 5,
+        section: 2,
+        sectionLabel: "Section 2 – Connaissance des ressources & accompagnement",
+        title: "Modélisation d’affaires",
+        text:
+          "Quel outil graphique est le plus souvent recommandé pour visualiser et structurer l’ensemble de votre modèle d’affaires sur une seule page ?",
+        answers: [
+          {
+            letter: "A",
+            text: "Le Plan d’affaires traditionnel de 50 pages."
+          },
+          {
+            letter: "B",
+            text: "Le Business Model Canvas (BMC)."
+          },
+          {
+            letter: "C",
+            text: "Le Bilan financier."
+          }
+        ]
+      },
+      {
+        id: 6,
+        section: 2,
+        sectionLabel: "Section 2 – Connaissance des ressources & accompagnement",
+        title: "Soutien et mentorat",
+        text:
+          "Connaissez-vous au moins deux organisations d’aide à l’entrepreneuriat dans votre région qui offrent des services de consultation ou de mentorat ?",
+        answers: [
+          {
+            letter: "A",
+            text: "Oui, je connais leurs services."
+          },
+          {
+            letter: "B",
+            text: "Oui, je connais leur nom, mais pas leurs services."
+          },
+          {
+            letter: "C",
+            text:
+              "Non, je n’ai pas fait de recherche à ce sujet."
+          }
+        ]
+      },
+      {
+        id: 7,
+        section: 2,
+        sectionLabel: "Section 2 – Connaissance des ressources & accompagnement",
+        title: "Réseautage",
+        text:
+          "Votre réseau professionnel actuel comprend-il au moins deux personnes qui sont elles-mêmes entrepreneurs ou qui ont des compétences complémentaires (légal, marketing, financement) ?",
+        answers: [
+          {
+            letter: "A",
+            text: "Oui, et je les contacte régulièrement."
+          },
+          {
+            letter: "B",
+            text:
+              "J’en connais, mais je ne les ai pas encore sollicités pour mon projet."
+          },
+          {
+            letter: "C",
+            text:
+              "Non, mon réseau est surtout personnel ou lié à mon emploi actuel."
+          }
+        ]
+      },
+      {
+        id: 8,
+        section: 2,
+        sectionLabel: "Section 2 – Connaissance des ressources & accompagnement",
+        title: "Étude de marché",
+        text:
+          "Avant de démarrer, quelle étape est cruciale pour valider votre idée auprès de votre clientèle potentielle ?",
+        answers: [
+          {
+            letter: "A",
+            text: "Obtenir un financement."
+          },
+          {
+            letter: "B",
+            text:
+              "Faire des entrevues ou des sondages pour tester le besoin."
+          },
+          {
+            letter: "C",
+            text:
+              "Commander les premières cartes professionnelles et créer un logo."
+          }
+        ]
+      },
+
+      // SECTION 3
+      {
+        id: 9,
+        section: 3,
+        sectionLabel: "Section 3 – Aspects financiers & légaux",
+        title: "Forme juridique",
+        text:
+          "Quelle forme juridique offre la meilleure protection de votre patrimoine personnel contre les dettes de votre entreprise ?",
+        answers: [
+          {
+            letter: "A",
+            text: "L’entreprise individuelle (travailleur autonome)."
+          },
+          {
+            letter: "B",
+            text: "La société par actions (Inc. / Corp.)."
+          },
+          {
+            letter: "C",
+            text: "L’entreprise en nom collectif."
+          }
+        ]
+      },
+      {
+        id: 10,
+        section: 3,
+        sectionLabel: "Section 3 – Aspects financiers & légaux",
+        title: "Seuil de rentabilité",
+        text:
+          "Savez-vous ce qu’est un « seuil de rentabilité » (ou point mort) et pourquoi il est essentiel de le calculer avant de lancer votre entreprise ?",
+        answers: [
+          {
+            letter: "A",
+            text:
+              "Oui, c’est le montant de ventes minimum nécessaire pour couvrir tous les coûts et ne faire ni profit ni perte."
+          },
+          {
+            letter: "B",
+            text:
+              "Oui, mais je ne saurais pas le calculer moi-même."
+          },
+          {
+            letter: "C",
+            text:
+              "Non, je me concentre uniquement sur les revenus."
+          }
+        ]
+      },
+      {
+        id: 11,
+        section: 3,
+        sectionLabel: "Section 3 – Aspects financiers & légaux",
+        title: "Sources de financement",
+        text:
+          "En plus du prêt bancaire traditionnel, nommez-vous au moins deux autres types de financement potentiels pour un démarrage ?",
+        answers: [
+          {
+            letter: "A",
+            text: "Oui, trois ou plus."
+          },
+          {
+            letter: "B",
+            text: "Oui, au moins deux."
+          },
+          {
+            letter: "C",
+            text: "Non, une seule ou aucune."
+          }
+        ]
+      },
+      {
+        id: 12,
+        section: 3,
+        sectionLabel: "Section 3 – Aspects financiers & légaux",
+        title: "Proposition de valeur",
+        text:
+          "Qu’est-ce qui devrait être au cœur de votre message marketing ?",
+        answers: [
+          {
+            letter: "A",
+            text:
+              "Une liste des caractéristiques techniques de votre produit/service."
+          },
+          {
+            letter: "B",
+            text:
+              "La description du problème que vous résolvez pour le client et de la façon dont vous le faites de manière unique."
+          },
+          {
+            letter: "C",
+            text:
+              "Le nom de votre entreprise et votre logo."
+          }
+        ]
+      }
+    ];
+
+    const interpretationTexts = {
+      A:
+        "Félicitations ! Vous possédez un état d’esprit solide et une bonne base de connaissances pratiques. Vous êtes proactif, à l’aise avec l’ambiguïté, et axé sur les solutions. Vous êtes prêt(e) à passer à l’action.",
+      B:
+        "Bonne base, mais prudence ! Vous avez l’intention et le potentiel, mais vous pourriez bénéficier de mentorat ciblé et d’une formation complémentaire (gestion du temps, finance, légal). Concentrez-vous à transformer les « je ne sais pas » en « j’ai un plan ».",
+      C:
+        "Phase de réflexion ! Avant de vous lancer, il est essentiel de solidifier vos bases. Nous vous recommandons de prendre le temps de vous former (ateliers, lectures, cours) et de rencontrer des experts (mentor, comptable, avocat). Votre état d’esprit pourrait nécessiter d’être renforcé pour faire face aux inévitables défis."
+    };
+
+    const sectionTitles = {
+      1: "Compétences entrepreneuriales & état d’esprit",
+      2: "Connaissance des ressources & accompagnement",
+      3: "Aspects financiers & légaux"
+    };
+
+    const progressTextEl = document.getElementById("progressText");
+    const sectionLabelEl = document.getElementById("sectionLabel");
+    const progressBarEl = document.getElementById("progressBar");
+    const questionSectionSmallLabelEl = document.getElementById(
+      "questionSectionSmallLabel"
+    );
+    const questionIndexEl = document.getElementById("questionIndex");
+    const questionTextEl = document.getElementById("questionText");
+    const questionSubtextEl = document.getElementById("questionSubtext");
+    const answersContainerEl = document.getElementById("answersContainer");
+    const questionViewEl = document.getElementById("questionView");
+    const resultsViewEl = document.getElementById("resultsView");
+    const sectionResultsEl = document.getElementById("sectionResults");
+    const backBtn = document.getElementById("backBtn");
+    const restartBtn = document.getElementById("restartBtn");
+
+    let currentIndex = 0; // index dans le tableau questions
+    let answers = []; // lettres A/B/C par question
+
+    function renderQuestion() {
+      const q = questions[currentIndex];
+
+      questionViewEl.style.display = "block";
+      resultsViewEl.classList.remove("visible");
+
+      questionIndexEl.textContent = "Q" + q.id;
+      questionTextEl.textContent = q.title + " : " + q.text;
+      questionSectionSmallLabelEl.textContent = q.sectionLabel;
+
+      progressTextEl.textContent =
+        "Question " + (currentIndex + 1) + " sur " + questions.length;
+      sectionLabelEl.textContent = q.sectionLabel;
+      const progress = ((currentIndex + 1) / questions.length) * 100;
+      progressBarEl.style.width = progress + "%";
+
+      answersContainerEl.innerHTML = "";
+      q.answers.forEach((ans) => {
+        const btn = document.createElement("button");
+        btn.className = "answer";
+        btn.innerHTML =
+          '<span class="badge-letter">' +
+          ans.letter +
+          "</span><span class=\"answer-text\">" +
+          ans.text +
+          "</span>";
+        btn.addEventListener("click", () => {
+          recordAnswer(ans.letter);
+        });
+        answersContainerEl.appendChild(btn);
+      });
+
+      backBtn.disabled = currentIndex === 0;
+    }
+
+    function recordAnswer(letter) {
+      answers[currentIndex] = letter;
+
+      if (currentIndex < questions.length - 1) {
+        currentIndex++;
+        questionViewEl.style.animation = "none";
+        void questionViewEl.offsetWidth; // reset animation
+        questionViewEl.style.animation = "floatIn 0.45s ease-out";
+        renderQuestion();
+      } else {
+        showResults();
+      }
+    }
+
+    function showResults() {
+      questionViewEl.style.display = "none";
+      resultsViewEl.classList.add("visible");
+
+      // Calcul de la majorité pour chaque section
+      const perSection = {
+        1: [],
+        2: [],
+        3: []
+      };
+
+      questions.forEach((q, idx) => {
+        const ans = answers[idx];
+        if (ans) {
+          perSection[q.section].push(ans);
+        }
+      });
+
+      sectionResultsEl.innerHTML = "";
+
+      [1, 2, 3].forEach((sectionId) => {
+        const letters = perSection[sectionId];
+        const counts = { A: 0, B: 0, C: 0 };
+        letters.forEach((l) => {
+          if (counts[l] !== undefined) counts[l]++;
+        });
+
+        let majorityLetter = "A";
+        if (counts.B > counts[majorityLetter]) majorityLetter = "B";
+        if (counts.C > counts[majorityLetter]) majorityLetter = "C";
+
+        // Gestion des égalités : profil mixte
+        const maxCount = Math.max(counts.A, counts.B, counts.C);
+        const topLetters = Object.entries(counts)
+          .filter(([_, c]) => c === maxCount && c > 0)
+          .map(([l]) => l);
+
+        let majorityLabel;
+        if (topLetters.length === 1) {
+          majorityLabel = "Majorité de réponses " + topLetters[0];
+        } else {
+          majorityLabel = "Profil mixte (" + topLetters.join(" / ") + ")";
+        }
+
+        const card = document.createElement("div");
+        card.className = "section-card";
+        card.innerHTML =
+          '<div class="section-card-header">' +
+          '<div class="section-title">Section ' +
+          sectionId +
+          " – " +
+          sectionTitles[sectionId] +
+          "</div>" +
+          '<div class="section-majority">' +
+          majorityLabel +
+          "</div>" +
+          "</div>" +
+          '<div class="section-body">' +
+          (interpretationTexts[majorityLetter] ||
+            "Résultat non disponible.") +
+          "</div>";
+
+        sectionResultsEl.appendChild(card);
+      });
+    }
+
+    backBtn.addEventListener("click", () => {
+      if (currentIndex > 0) {
+        currentIndex--;
+        questionViewEl.style.display = "block";
+        resultsViewEl.classList.remove("visible");
+        renderQuestion();
+      }
+    });
+
+    restartBtn.addEventListener("click", () => {
+      currentIndex = 0;
+      answers = [];
+      renderQuestion();
+      sectionResultsEl.innerHTML = "";
+      resultsViewEl.classList.remove("visible");
+    });
+
+    // première question
+    renderQuestion();
+  </script>
+</body>
+</html>
