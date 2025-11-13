@@ -562,11 +562,18 @@
 
           <div class="section-results" id="sectionResults"></div>
 
-          <div class="result-actions">
-            <button class="btn-primary" id="restartBtn">
-              <span class="emoji">🔄</span> Refaire le questionnaire
-            </button>
-          </div>
+<div class="result-actions">
+  <button class="btn-secondary" onclick="exportPDF()">
+    📄 Exporter en PDF
+  </button>
+  <button class="btn-secondary" onclick="shareOnFacebook()">
+    📣 Partager sur Facebook
+  </button>
+  <button class="btn-primary" id="restartBtn">
+    <span class="emoji">🔄</span> Refaire le questionnaire
+  </button>
+</div>
+
         </div>
       </main>
 
@@ -1037,9 +1044,24 @@
 
     // première question
     renderQuestion();
+      function exportPDF() {
+    // Ouvre la fenêtre d’impression : l’utilisateur peut choisir "Enregistrer au format PDF"
+    window.print();
+  }
+  function shareOnFacebook() {
+    const url = encodeURIComponent(window.location.href);
+    const shareUrl = "https://www.facebook.com/sharer/sharer.php?u=" + url;
+    window.open(
+      shareUrl,
+      "_blank",
+      "noopener,noreferrer,width=600,height=500"
+    );
+  }
+
   </script>
 </body>
 </html>
+
 
 
 
